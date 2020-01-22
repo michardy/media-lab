@@ -1,19 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<!--Please wait while I sacrafice a newborn goat to IE/Edge. (Edit: It still does not work)-->
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+		<!--All hail Facebook glory be their name.-->
+		<meta property="og:title" content="Media Lab"/>
+		<meta property="og:type" content="website"/>
+		<meta property="og:url" content="https://michaelbh.com/media-lab"/>
+		<meta property="og:description" content="Experimenting with news data"/>
+		<!--Birdseed (Seems a little repetative doesn't it.)-->
+		<meta name="twitter:title" content="Media Lab"/>
+		<meta name="twitter:card" content="summary"/>
+		<meta name="twitter:url" content="https://michaelbh.com/media-lab"/>
+		<meta name="twitter:description" content="Experimenting with news data"/>
+		<!--Google.  Meta tags are for normal companies.-->
+		<script type="application/ld+json">
+			{
+				"@context": "http://schema.org",
+				"@type": "WebSite",
+				"name": "Experimenting with news data",
+				"url": "https://michaelbh.com/media-lab"
+			}
+		</script>
+		<!--And now for the actual standard that everyone seems to need their own version of (Facebook, Twitter, Google):-->
+		<title>Media Lab</title>
+		<meta name="author" content="Michael Hardy">
+		<meta name="description" content="Experimenting with news data">
+		<meta name="cartographer-map-id" content="media-lab$0@portfolio$0">
+		<meta name="referrer" content="strict-origin-when-cross-origin">
 		<script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
 	</head>
 	<body>
+		<div id="controls">
+			<label for="vis_typeSelector">Make </label>
+			<select id="vis_typeSelector" name="vis_type" disabled>
+				<option value="words" selected>Word Cloud</option>
+			</select>
+			<label for="fieldSelector"> using the field </label>
+			<select id="fieldSelector" name="field" onchange="update(this);">
+				<option value="people.k" selected>People</option>
+				<option value="places.k">Places</option>
+				<option value="things.k">Things</option>
+				<option value="org.k">Organizations</option>
+				<option value="actions.k">Actions</option>
+				<option value="ideas.actor.k">Actors</option>
+			</select>
+		</div>
 		<div id="view"></div>
 		<script type="text/javascript">
 			var view;
+			var globalspec;
 
 			fetch('words.json')
 				.then(res => res.json())
 				.then(spec => render(spec))
 				.catch(err => console.error(err));
 
+			function update(sel) {
+				globalspec.data[0].url = `https://labs.mhardy.dev/query/news/terms/24h/${sel.value}/50`;
+				render(globalspec);
+			}
+
 			function render(spec) {
+				globalspec = spec;
 				view = new vega.View(vega.parse(spec), {
 					renderer:  'canvas',  // renderer (canvas or svg)
 					container: '#view',   // parent DOM container
@@ -22,5 +73,6 @@
 				return view.runAsync();
 			}
 		</script>
+		<script src="https://cartographer.michaelbh.com/js/c.js"></script>
 	</body>
 </html>
