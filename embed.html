@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<!--Please wait while I sacrafice a newborn goat to IE/Edge. (Edit: It still does not work)-->
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+		<!--All hail Facebook glory be their name.-->
+		<meta property="og:title" content="Media Lab"/>
+		<meta property="og:type" content="website"/>
+		<meta property="og:url" content="https://michaelbh.com/media-lab"/>
+		<meta property="og:description" content="Experimenting with news data"/>
+		<!--Birdseed (Seems a little repetative doesn't it.)-->
+		<meta name="twitter:title" content="Media Lab"/>
+		<meta name="twitter:card" content="summary"/>
+		<meta name="twitter:url" content="https://michaelbh.com/media-lab"/>
+		<meta name="twitter:description" content="Experimenting with news data"/>
+		<!--Google.  Meta tags are for normal companies.-->
+		<script type="application/ld+json">
+			{
+				"@context": "http://schema.org",
+				"@type": "WebSite",
+				"name": "Experimenting with news data",
+				"url": "https://michaelbh.com/media-lab"
+			}
+		</script>
+		<!--And now for the actual standard that everyone seems to need their own version of (Facebook, Twitter, Google):-->
+		<title>Media Lab</title>
+		<meta name="author" content="Michael Hardy">
+		<meta name="description" content="Experimenting with news data">
+		<meta name="cartographer-map-id" content="media-embed$0@portfolio$0">
+		<meta name="referrer" content="strict-origin-when-cross-origin">
+		<script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michardy/grid-ui@6.2.4/css/basic.min.css">
+		<link rel="stylesheet" href="/css/branding.css">
+		<style>
+			html,body {
+				background-color: white;
+				color: black;
+				width: 100%;
+			}
+			#view {
+				width 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="tabbar">
+			<input type="radio" name="tabs" value="people.k" id="peopleselector" class="fatradio-button" onchange="update(this);" checked>
+			<label for="peopleselector">Top People</label>
+			<input type="radio" name="tabs" value="places.k" id="placesselector" class="fatradio-button" onchange="update(this);">
+			<label for="placesselector">Top Places</label>
+		</div>
+		<div id="view"></div>
+		<script type="text/javascript">
+			var view;
+			var globalspec;
+
+			fetch('words.json')
+				.then(res => res.json())
+				.then(spec => render(spec))
+				.catch(err => console.error(err));
+
+			function update(sel) {
+				if (sel.checked){
+					globalspec.data[0].url = `https://labs.mhardy.dev/query/news/terms/24h/${sel.value}/50`;
+					render(globalspec);
+				}
+			}
+
+			function render(spec) {
+				let v = document.getElementById("view");
+				spec.width = v.clientWidth;
+				spec.marks[0].transform[0].size[0] = spec.width;
+				globalspec = spec;
+				view = new vega.View(vega.parse(spec), {
+					renderer:  'canvas',  // renderer (canvas or svg)
+					container: '#view',   // parent DOM container
+					hover:     true       // enable hover processing
+				});
+				return view.runAsync();
+			}
+		</script>
+	</body>
+</html>
