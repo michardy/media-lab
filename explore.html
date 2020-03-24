@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<!--Please wait while I sacrafice a newborn goat to IE/Edge. (Edit: It still does not work)-->
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+		<!--All hail Facebook glory be their name.-->
+		<meta property="og:title" content="Media Lab"/>
+		<meta property="og:type" content="website"/>
+		<meta property="og:url" content="https://michaelbh.com/media-lab"/>
+		<meta property="og:description" content="Experimenting with news data"/>
+		<!--Birdseed (Seems a little repetative doesn't it.)-->
+		<meta name="twitter:title" content="Media Lab"/>
+		<meta name="twitter:card" content="summary"/>
+		<meta name="twitter:url" content="https://michaelbh.com/media-lab"/>
+		<meta name="twitter:description" content="Experimenting with news data"/>
+		<!--Google.  Meta tags are for normal companies.-->
+		<script type="application/ld+json">
+			{
+				"@context": "http://schema.org",
+				"@type": "WebSite",
+				"name": "Experimenting with news data",
+				"url": "https://michaelbh.com/media-lab"
+			}
+		</script>
+		<!--And now for the actual standard that everyone seems to need their own version of (Facebook, Twitter, Google):-->
+		<title>Media Lab | Explore</title>
+		<meta name="author" content="Michael Hardy">
+		<meta name="description" content="Experimenting with news data">
+		<meta name="cartographer-map-id" content="media-lab$0@portfolio$0">
+		<meta name="referrer" content="strict-origin-when-cross-origin">
+	</head>
+	<body>
+		<main>
+			<textarea id="reqcont">{
+	"size": 10,
+	"filters": {
+		"ideas.actor.k": ["Trump"],
+		"places.k": ["North Korea", "Iran"]
+	},
+	"range": "7d",
+	"aggs": [
+		{
+			"name": "action_terms",
+			"action": "Terms",
+			"field": "actions.k",
+			"count": 5,
+			"autoquery": true
+		}
+	]
+}</textarea>
+			<br/>
+			<button onclick="run()">Run query</button>
+			<br/>
+			<output>
+				<code id="rettarget"></code>
+			</output>
+			<script>
+				async function make_req() {
+					let req = reqcont.value;
+					let resp = await fetch("https://labs.mhardy.dev/query/news", {
+						method: "POST",
+						body: req,
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					});
+					return await resp.text();
+				}
+				function run() {
+					make_req().then((out) => {
+						console.log(out);
+						rettarget.textContent = out;
+					});
+				}
+			</script>
+		</main>
+		<script src="https://cartographer.michaelbh.com/js/c.js"></script>
+	</body>
+</html>
