@@ -25,10 +25,10 @@
 			}
 		</script>
 		<!--And now for the actual standard that everyone seems to need their own version of (Facebook, Twitter, Google):-->
-		<title>Media Lab | Explore</title>
+		<title>Media Lab | Query</title>
 		<meta name="author" content="Michael Hardy">
 		<meta name="description" content="Experimenting with news data">
-		<meta name="cartographer-map-id" content="media-lab$0@portfolio$0">
+		<meta name="cartographer-map-id" content="media-query$0@portfolio$0">
 		<meta name="referrer" content="strict-origin-when-cross-origin">
 	</head>
 	<body>
@@ -54,7 +54,7 @@
 			<button onclick="run()">Run query</button>
 			<br/>
 			<output>
-				<code id="rettarget"></code>
+				<pre id="rettarget"></pre>
 			</output>
 			<script>
 				async function make_req() {
@@ -66,12 +66,11 @@
 							'Content-Type': 'application/json'
 						}
 					});
-					return await resp.text();
+					return await resp.json();
 				}
 				function run() {
 					make_req().then((out) => {
-						console.log(out);
-						rettarget.textContent = out;
+						rettarget.textContent = JSON.stringify(out, null, 2);
 					});
 				}
 			</script>
