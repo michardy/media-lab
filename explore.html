@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="https://michaelbh.com/css/branding.css"/>
+		<!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michardy/grid-ui@6/css/grid_window.min.css">-->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michardy/grid-ui@6/css/basic.min.css">
+		<!--Please wait while I sacrafice a newborn goat to IE/Edge. (Edit: It still does not work)-->
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+		<!--All hail Facebook glory be their name.-->
+		<meta property="og:title" content="Media Lab"/>
+		<meta property="og:type" content="website"/>
+		<meta property="og:url" content="https://michaelbh.com/media-lab"/>
+		<meta property="og:description" content="Experimenting with news data"/>
+		<!--Birdseed (Seems a little repetative doesn't it.)-->
+		<meta name="twitter:title" content="Media Lab"/>
+		<meta name="twitter:card" content="summary"/>
+		<meta name="twitter:url" content="https://michaelbh.com/media-lab"/>
+		<meta name="twitter:description" content="Experimenting with news data"/>
+		<!--Google.  Meta tags are for normal companies.-->
+		<script type="application/ld+json">
+			{
+				"@context": "http://schema.org",
+				"@type": "WebSite",
+				"name": "Experimenting with news data",
+				"url": "https://michaelbh.com/media-lab"
+			}
+		</script>
+		<!--And now for the actual standard that everyone seems to need their own version of (Facebook, Twitter, Google):-->
+		<title>Media Lab | Explore</title>
+		<meta name="author" content="Michael Hardy">
+		<meta name="description" content="Experimenting with news data">
+		<meta name="cartographer-map-id" content="media-explore$0@portfolio$0">
+		<meta name="referrer" content="strict-origin-when-cross-origin">
+	</head>
+	<body>
+		<main>
+			<form>
+                <label for="formrange">Query the</label>
+                <select id="formrange">
+                    <option value="12h">last 12 hours</option>
+                    <option value="24h">last 24 hours</option>
+                    <option value="5d">last 5 days</option>
+                    <option value="7d">last 7 days</option>
+                    <option value="14d-7d">previous 7 days</option>
+                </select>
+                for
+                <label for="filterbool"><span>any articles</span><span style="display: none;">articles where:</span></label><input id="filterbool" type="checkbox">.
+                <br/>
+                Returning
+                <input type="number" min="0" max="255" value="10">
+                matching articles
+            </form>
+			<br/>
+			<button onclick="run()">Run query</button>
+			<br/>
+			<output>
+				<code id="rettarget"></code>
+			</output>
+			<script>
+				async function make_req() {
+					let req = reqcont.value;
+					let resp = await fetch("https://labs.mhardy.dev/query/news", {
+						method: "POST",
+						body: req,
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					});
+					return await resp.text();
+				}
+				function run() {
+					make_req().then((out) => {
+						console.log(out);
+						rettarget.textContent = out;
+					});
+				}
+			</script>
+		</main>
+		<script src="https://cartographer.michaelbh.com/js/c.js"></script>
+	</body>
+</html>
