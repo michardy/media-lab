@@ -46,9 +46,11 @@
 	</head>
 	<body>
 		<div id="tabbar">
-			<input type="radio" name="tabs" value="people.k" id="peopleselector" class="fatradio-button" onchange="update(this);" checked>
+			<input type="radio" name="tabs" value="map.json" id="mapselector" class="fatradio-button" onchange="update(this);" checked>
+			<label for="mapselector">News Stories About COVID-19</label>
+			<input type="radio" name="tabs" value="words.json" id="peopleselector" class="fatradio-button" onchange="update(this);">
 			<label for="peopleselector">Top People</label>
-			<input type="radio" name="tabs" value="places.k" id="placesselector" class="fatradio-button" onchange="update(this);">
+			<input type="radio" name="tabs" value="places.json" id="placesselector" class="fatradio-button" onchange="update(this);">
 			<label for="placesselector">Top Places</label>
 		</div>
 		<div id="view"></div>

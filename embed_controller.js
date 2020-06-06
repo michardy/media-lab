@@ -1,23 +1,26 @@
 var view;
 var globalspec;
 
-fetch('words.json')
+fetch('map.json')
 	.then(res => res.json())
 	.then(spec => render(spec))
 	.catch(err => console.error(err));
 
 function update(sel) {
 	if (sel.checked){
-		globalspec.data[0].url = `https://labs.mhardy.dev/query/news/terms/24h/${sel.value}/50`;
-		render(globalspec);
+		fetch(sel.value)
+			.then(res => res.json())
+			.then(spec => render(spec))
+			.catch(err => console.error(err));
 	}
 }
 
 function render(spec) {
 	let v = document.getElementById("view");
 	spec.width = v.clientWidth;
-	spec.marks[0].transform[0].size[0] = spec.width;
-	globalspec = spec;
+	if (spec.marks[0].transform[0].size) {
+		spec.marks[0].transform[0].size[0] = spec.width;
+	}
 	view = new vega.View(vega.parse(spec), {
 		renderer:  'canvas',  // renderer (canvas or svg)
 		container: '#view',   // parent DOM container

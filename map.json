@@ -1,0 +1,116 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "A configurable map of countries of the world.",
+  "width": 900,
+  "height": 500,
+  "autosize": "none",
+
+  "signals": [
+    { "name": "translate0", "update": "width / 2" },
+    { "name": "translate1", "update": "height / 2" }
+  ],
+
+  "projections": [
+    {
+      "name": "projection",
+      "type": "naturalEarth1",
+      "scale": 150,
+      "rotate": [
+        0,
+        0,
+        0
+      ],
+      "center": [
+        0,
+        0
+      ],
+      "translate": [
+        {"signal": "translate0"},
+        {"signal": "translate1"}
+      ]
+    }
+  ],
+
+  "data": [
+    {
+      "name": "world",
+      "url": "world-110m.json",
+      "format": {
+        "type": "topojson",
+        "feature": "countries"
+      }
+    },
+    {
+      "name": "table",
+      "url": "https://labs.mhardy.dev/query/news/filterterms/1M/known_places/40/things.k/coronavirus",
+      "format": {
+        "type": "json"
+      }
+    },
+    {
+      "name": "places",
+      "url": "https://labs.mhardy.dev/maps/compositfromquery/query/news/filterterms/1M/known_places/40/things.k/coronavirus",
+      "format": {
+        "type": "topojson",
+        "feature": "regions",
+        "property": "topo"
+      },
+      "transform": [
+        { "type": "lookup", "from": "table", "key": "key", "fields": ["properties.gkg_id"], "values": ["count"] },
+        { "type": "filter", "expr": "datum.count != null" }
+      ]
+    }
+  ],
+
+  "scales": [
+    {
+      "name": "color",
+      "type": "quantize",
+      "domain": {"data": "table", "field": "count"},
+      "range": {"scheme": "reds", "count": 10}
+    }
+  ],
+
+  "marks": [
+    {
+      "type": "shape",
+      "from": {"data": "world"},
+      "encode": {
+        "update": {
+          "strokeWidth": {"value": 1},
+          "stroke": {"value": "#777"},
+          "fill": {"value": "#fff"},
+          "zindex": {"value": 0}
+        },
+        "hover": {
+          "strokeWidth": {"value": 2},
+          "stroke": {"value": "black"},
+          "zindex": {"value": 1}
+        }
+      },
+      "transform": [
+        { "type": "geoshape", "projection": "projection" }
+      ]
+    },
+    {
+      "type": "shape",
+      "from": {"data": "places"},
+      "encode": {
+        "update": {
+          "strokeWidth": {"value": 1},
+          "stroke": {"value": "#555"},
+          "fill": {"scale": "color", "field": "count"},
+          "zindex": {"value": 0}
+        },
+        "hover": {
+          "strokeWidth": {"value": 2},
+          "stroke": {"value": "firebrick"},
+          "zindex": {"value": 1}
+        }
+      },
+      "transform": [
+        { "type": "geoshape", "projection": "projection" }
+      ]
+    }
+  ]
+}
