@@ -42,14 +42,14 @@
     },
     {
       "name": "table",
-      "url": "https://labs.mhardy.dev/query/news/filterterms/1M/known_places/19/things.k/coronavirus",
+      "url": "https://labs.mhardy.dev/query/news/filterterms/1M/known_places/5/things.k/coronavirus",
       "format": {
         "type": "json"
       }
     },
     {
       "name": "places",
-      "url": "https://labs.mhardy.dev/maps/compositfromquery/query/news/filterterms/1M/known_places/19/things.k/coronavirus",
+      "url": "https://labs.mhardy.dev/maps/compositfromquery/query/news/filterterms/1M/known_places/5/things.k/coronavirus",
       "format": {
         "type": "topojson",
         "feature": "regions",
